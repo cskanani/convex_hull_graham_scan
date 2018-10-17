@@ -15,9 +15,9 @@ def slp_srt(x):
         return -(x[0] - min_yp[0]) / (x[1] - min_yp[1])
     except:
         if((x[0] - min_yp[0]) < 0):
-            return 1000
+            return 10000
         else:
-            return -1000
+            return -10000 + x[0] - min_yp[0]
     
 pts.sort(key=lambda x : x[1])
 min_yp = pts.pop(0)
@@ -44,10 +44,13 @@ while(pts):
     else:
         ptsp.append(hull.pop())
         while(True):
-            orip = orient(hull[-1],cur_p,hull[-2])
-            if(orip < 2):
-                ptsp.append(hull.pop())
-            else:
+            try:
+                orip = orient(hull[-1],cur_p,hull[-2])
+                if(orip < 2):
+                    ptsp.append(hull.pop())
+                else:
+                    break
+            except:
                 break
         hull.append(cur_p)
 
@@ -55,12 +58,10 @@ fig, ax = plt.subplots(figsize=(8,8))
 ax.scatter([x[0] for x in ptsp], [x[1] for x in ptsp], c='blue')
 ax.scatter([x[0] for x in hull], [x[1] for x in hull], c='red')
 
-i = 1
+i = 0
 while i < len(hull):
     x,y = zip(hull[i-1],hull[i])
     ax.plot(x,y,c='r')
     i+=1
-x,y = zip(hull[0],hull[i-1])
-ax.plot(x,y,c='r')
 
 plt.show()
